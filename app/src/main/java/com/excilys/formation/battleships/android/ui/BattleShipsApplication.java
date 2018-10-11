@@ -124,6 +124,7 @@ public class BattleShipsApplication extends Application {
         //TODO insert putShips() here by overriding player's method
         public void putShips(){
             Intent intent = new Intent(BattleShipsApplication.this, PutShipsActivity.class);
+            startActivity(intent);
         }
     }
 

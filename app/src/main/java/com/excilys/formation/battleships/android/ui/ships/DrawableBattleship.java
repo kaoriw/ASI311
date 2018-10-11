@@ -25,6 +25,6 @@ public class DrawableBattleship extends BattleShip implements DrawableShip {
     // TODO return the right drawable according to ship's orientation using the map
     @Override
     public int getDrawable() {
-        return 0;
+        return DRAWABLES.get(this.getOrientation());
     }
 }
