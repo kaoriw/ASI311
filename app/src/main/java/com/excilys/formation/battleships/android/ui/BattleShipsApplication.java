@@ -3,6 +3,11 @@ package com.excilys.formation.battleships.android.ui;
 import android.app.Application;
 import android.content.Intent;
 
+import com.excilys.formation.battleships.android.ui.ships.DrawableBattleship;
+import com.excilys.formation.battleships.android.ui.ships.DrawableCarrier;
+import com.excilys.formation.battleships.android.ui.ships.DrawableDestroyer;
+import com.excilys.formation.battleships.android.ui.ships.DrawableSubmarine;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -102,7 +107,7 @@ public class BattleShipsApplication extends Application {
             AbstractShip[] ships = new AbstractShip[0];
 
             // TODO uncomment me
-            // ships = new AbstractShip[]{new DrawableDestroyer(), new DrawableSubmarine(), new DrawableSubmarine(), new DrawableBattleship(), new DrawableCarrier()};
+            ships = new AbstractShip[]{new DrawableDestroyer(), new DrawableSubmarine(), new DrawableSubmarine(), new DrawableBattleship(), new DrawableCarrier()};
             return Arrays.asList(ships);
         }
     }
