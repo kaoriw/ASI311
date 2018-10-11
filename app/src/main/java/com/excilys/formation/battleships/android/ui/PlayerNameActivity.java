@@ -21,9 +21,10 @@ public class PlayerNameActivity extends AppCompatActivity {
     public void onClickButton(View v) {
         String name = mNameEditText.getText().toString();
         if (!name.isEmpty()) {
-
             Toast.makeText(PlayerNameActivity.this, name, Toast.LENGTH_LONG).show();
+            BattleShipsApplication.getGame().init(name);
         }
+        else Toast.makeText(PlayerNameActivity.this, "Entrez votre nom", Toast.LENGTH_LONG).show();
     }
 
 }
