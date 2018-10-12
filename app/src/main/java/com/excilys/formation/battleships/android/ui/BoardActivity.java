@@ -24,7 +24,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     private static final String TAG = BoardActivity.class.getSimpleName();
 
     private static class Default {
-        private static final int TURN_DELAY = 1000; // ms
+        private static final int TURN_DELAY = 500; // ms
     }
 
     /* ***
@@ -69,28 +69,69 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     // TODO  call me maybe
     private void doPlayerTurn(int x, int y) {
-        mPlayerTurn = false;
-        Hit hit = mOpponentBoard.sendHit(x, y);
-        boolean strike = hit != Hit.MISS;
+        new AsyncTask<Integer, String, Boolean>() {
+            private String DISPLAY_TEXT = "0", DISPLAY_HIT = "1";
 
-        mBoardController.setHit(strike, x, y);
+            @Override
+            protected Boolean doInBackground(Integer... params) {
+                boolean strike;
+                //do {
+                    int[] coordinate = {params[0], params[1]};
+                    int x = params[0];
+                    int y = params[1];
 
-        if (strike) {
-            mPlayerTurn = true;
-            mDone = updateScore();
-            if (mDone) {
-                gotoScoreActivity();
+                    sleep(Default.TURN_DELAY);
+                    publishProgress("...");
+//                    sleep(Default.TURN_DELAY);
+                    mPlayerTurn = false;
+                    Hit hit = mOpponentBoard.sendHit(x, y);
+                    strike = hit != Hit.MISS;
+                    publishProgress(DISPLAY_TEXT, makeHitMessage(false, coordinate, hit));
+                    publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(x), String.valueOf(y));
+                    mDone = updateScore();
+                    sleep(Default.TURN_DELAY);
+                //} while (strike && !mDone);
+                return strike;
             }
-        } else {
-            // TODO sleep a while...
-            mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
-            mViewPager.setEnableSwipe(false);
-            doOpponentTurn();
-        }
-        String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
-        Log.d(TAG, msgToLog);
 
-        showMessage(makeHitMessage(false, new int[] {x,y}, hit));
+            @Override
+            protected void onProgressUpdate(String... values) {
+                if (values[0].equals(DISPLAY_TEXT)) {
+                    showMessage(values[1]);
+                } else if (values[0].equals(DISPLAY_HIT)) {
+                    mBoardController.setHit(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean strike) {
+                if (strike)
+
+                {
+                    mPlayerTurn = true;
+                    mDone = updateScore();
+                    if (mDone) {
+                        gotoScoreActivity();
+                    }
+                } else {
+                    // TODO sleep a while...
+                    mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
+                    sleep(Default.TURN_DELAY);
+                    mViewPager.setEnableSwipe(false);
+                    doOpponentTurn();
+                }
+
+            }
+
+
+//            String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
+//        Log.d(TAG,msgToLog);
+//
+//            showMessage(makeHitMessage(false, new int[] {
+//                x, y
+//            },hit));
+//        }
+        }.execute(x, y);
     }
 
     private void doOpponentTurn() {
@@ -121,6 +162,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             @Override
             protected void onPostExecute(Boolean done) {
                 if (!done) {
+                    sleep(Default.TURN_DELAY);
                     mViewPager.setEnableSwipe(true);
                     mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
                     mPlayerTurn = true;
