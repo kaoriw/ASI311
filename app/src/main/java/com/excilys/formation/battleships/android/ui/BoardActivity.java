@@ -20,7 +20,7 @@ import battleships.formation.excilys.com.battleships.R;
 import battleships.ship.AbstractShip;
 
 
-public class BoardActivity extends AppCompatActivity {
+public class BoardActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener{
     private static final String TAG = BoardActivity.class.getSimpleName();
 
     private static class Default {
@@ -214,7 +214,7 @@ public class BoardActivity extends AppCompatActivity {
             case MISS:
                 msg = hit.toString();
                 break;
-            case STIKE:
+            case STRIKE:
                 msg = hit.toString();
                 break;
             default:
@@ -235,6 +235,13 @@ public class BoardActivity extends AppCompatActivity {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onTileClick(int id, int x, int y) {
+        if(id == BoardController.HITS_FRAGMENT){
+            doPlayerTurn( x, y);
         }
     }
 }

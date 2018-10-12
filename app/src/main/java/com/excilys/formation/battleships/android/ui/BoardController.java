@@ -49,14 +49,9 @@ public class BoardController implements IBoard {
     public Hit sendHit(int x, int y) {
         // TODO decor me
         Hit hit = mBoard.sendHit(x,y);
-        if(mBoard.getHit(x,y)){
-            mHitsFragment.putDrawable(R.drawable.hit, x, y);
-        }
-        else {
-            mHitsFragment.putDrawable(R.drawable.miss, x, y);
-        }
+        displayHitInShipBoard(mBoard.getHit(x,y), x, y);
 
-        return null;
+        return hit;
     }
 
     @Override
@@ -107,6 +102,7 @@ public class BoardController implements IBoard {
     public void setHit(boolean hit, int x, int y) {
         // TODO decore me
         mBoard.setHit(hit, x, y);
+        mHitsFragment.putDrawable(hit ? R.drawable.hit : R.drawable.miss, x, y);
     }
 
     @Override

@@ -101,7 +101,7 @@ public class Board implements IBoard {
                 if (state.isSunk()) {
                     return Hit.fromInt(state.getShip().getLength());
                 } else {
-                    return Hit.STIKE;
+                    return Hit.STRIKE;
                 }
             }
         }
