@@ -46,7 +46,6 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // setup layout
         setContentView(R.layout.activity_game_session);
 

@@ -1,6 +1,7 @@
 package com.excilys.formation.battleships.android.ui;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import java.util.Locale;
 
 import battleships.formation.excilys.com.battleships.R;
 import battleships.ship.AbstractShip;
+
+import static java.lang.Thread.sleep;
 
 public class PutShipsActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener {
     private static final String TAG = PutShipsActivity.class.getSimpleName();
@@ -90,7 +93,23 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         }
 
         if (mCurrentShip >= mShips.length) {
-            gotoBoardActivity();
+            new AsyncTask<Void, Void, Boolean>(){
+                @Override
+                protected Boolean doInBackground(Void... params){
+                    try {
+                        Thread.sleep(500);
+                        gotoBoardActivity();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                }
+
+//                @Override
+//                protected void onPostExecute(Boolean... result) {
+//                    gotoBoardActivity();
+//                }
+            }.execute();
         } else {
             updateRadioButton();
         }
