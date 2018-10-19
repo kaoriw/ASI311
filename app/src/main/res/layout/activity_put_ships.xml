@@ -116,6 +116,13 @@
                         android:layout_height="wrap_content"
                         android:text="@string/west" />
                 </RadioGroup>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/putship_radios_orientation"
+                    android:layout_centerHorizontal="true"
+                    android:text="Jouer"
+                    android:onClick="onClickButton"/>
 
             </RelativeLayout>
 

@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -285,4 +284,11 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             doPlayerTurn( x, y);
         }
     }
+
+    @Override
+    public void onBackPressed(){
+
+    }
+
+
 }

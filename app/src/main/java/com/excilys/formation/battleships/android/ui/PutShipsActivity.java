@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -92,27 +93,29 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
             Toast.makeText(this, R.string.put_ship_error, Toast.LENGTH_LONG).show();
         }
 
-        if (mCurrentShip >= mShips.length) {
-            new AsyncTask<Void, Void, Boolean>(){
-                @Override
-                protected Boolean doInBackground(Void... params){
-                    try {
-                        Thread.sleep(500);
-                        gotoBoardActivity();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return false;
-                }
-
+//        if (mCurrentShip >= mShips.length) {
+//            new AsyncTask<Void, Void, Boolean>(){
 //                @Override
-//                protected void onPostExecute(Boolean... result) {
-//                    gotoBoardActivity();
+//                protected Boolean doInBackground(Void... params){
+//                    try {
+//                        Thread.sleep(500);
+//                        gotoBoardActivity();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    return false;
 //                }
-            }.execute();
-        } else {
+//
+////                @Override
+////                protected void onPostExecute(Boolean... result) {
+////                    gotoBoardActivity();
+////                }
+//            }.execute();
+//        } else {
+        if(mCurrentShip < mShips.length) {
             updateRadioButton();
         }
+//        }
     }
 
     private void gotoBoardActivity() {
@@ -167,6 +170,21 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private void updateNextShipNameToDisplay() {
         if (mCurrentShip < mShips.length) {
             mShipName.setText(mShips[mCurrentShip].getName());
+        }
+    }
+
+    @Override
+    public void onBackPressed(){
+
+    }
+
+    public void onClickButton(View v){
+        if(mCurrentShip == mShips.length) {
+            gotoBoardActivity();
+        }
+        else
+        {
+            Toast.makeText(PutShipsActivity.this, "Vous n'avez pas placé tous les navires", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -23,6 +23,7 @@ public class PlayerNameActivity extends AppCompatActivity {
         String savedName = preferences.getString("PlayerName", ""); //Voir si un nom est stocké dans Playername
         if(!savedName.equals("")) { //si le nom existe déjà
             BattleShipsApplication.getGame().init(savedName);  //commencer directement le jeu
+            Toast.makeText(PlayerNameActivity.this, savedName, Toast.LENGTH_LONG).show();
         }
         else {
             setContentView(R.layout.activity_player_name);
@@ -41,6 +42,11 @@ public class PlayerNameActivity extends AppCompatActivity {
 
         }
         else Toast.makeText(PlayerNameActivity.this, "Entrez votre nom", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onBackPressed(){
+
     }
 
 }
