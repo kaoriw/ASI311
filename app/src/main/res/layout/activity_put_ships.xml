@@ -116,14 +116,24 @@
                         android:layout_height="wrap_content"
                         android:text="@string/west" />
                 </RadioGroup>
-                <Button
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/putship_radios_orientation"
-                    android:layout_centerHorizontal="true"
-                    android:text="Jouer"
-                    android:onClick="onClickButton"/>
-
+                    android:layout_centerHorizontal="true">
+                    <Button
+                        android:id="@+id/btn-start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Jouer"
+                        android:onClick="onClickStart"/>
+                    <Button
+                        android:id="@+id/btn-reset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Recommencer"
+                        android:onClick="onClickReset"/>
+                </LinearLayout>
             </RelativeLayout>
 
         </RelativeLayout>

@@ -178,7 +178,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
     }
 
-    public void onClickButton(View v){
+    public void onClickStart(View v){
         if(mCurrentShip == mShips.length) {
             gotoBoardActivity();
         }
@@ -186,5 +186,11 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         {
             Toast.makeText(PutShipsActivity.this, "Vous n'avez pas placé tous les navires", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void onClickReset(View v){
+        mCurrentShip = 0;
+        int playerId = 0;
+        BattleShipsApplication.getGame().init(BattleShipsApplication.getPlayers()[playerId].getName());
     }
 }
