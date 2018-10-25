@@ -52,16 +52,7 @@
         android:layout_below="@id/main-label"
         />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/main-label"
-        android:layout_alignEnd="@id/btn_restart"
-        android:layout_alignRight="@id/btn_restart"
-        android:layout_marginEnd="-100dp"
-        android:layout_marginRight="-100dp"
-        android:onClick="OnClickEnd"
-        android:text="Quitter" />
+
 
     <ImageView
         android:id="@+id/score_win_image"

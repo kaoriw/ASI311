@@ -93,5 +93,4 @@ public class ScoreActivity extends AppCompatActivity {
         openDialogToRestart();
     }
 
-
 }

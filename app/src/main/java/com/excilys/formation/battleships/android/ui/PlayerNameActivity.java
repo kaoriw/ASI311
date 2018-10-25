@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
+import android.provider.Settings;
 import battleships.formation.excilys.com.battleships.R;
 
 public class PlayerNameActivity extends AppCompatActivity {

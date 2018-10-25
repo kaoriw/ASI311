@@ -3,6 +3,7 @@ package com.excilys.formation.battleships.android.ui;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,11 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-
+import java.util.Locale;
 import battleships.Board;
 import battleships.Hit;
 import battleships.Player;
+import battleships.ShipException;
 import battleships.formation.excilys.com.battleships.R;
 import battleships.ship.AbstractShip;
 
