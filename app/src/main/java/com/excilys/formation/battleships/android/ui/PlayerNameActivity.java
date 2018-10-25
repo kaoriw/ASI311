@@ -44,7 +44,6 @@ public class PlayerNameActivity extends AppCompatActivity {
 
         }
         else {
-            //Toast.makeText(PlayerNameActivity.this, "Entrez votre nom", Toast.LENGTH_LONG).show();
             Snackbar.make(findViewById(R.id.main_name), "Entrez votre nom", Snackbar.LENGTH_SHORT);
         }
     }

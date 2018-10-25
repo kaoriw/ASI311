@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import battleships.formation.excilys.com.battleships.R;
@@ -27,6 +28,8 @@ public class ScoreActivity extends AppCompatActivity {
         boolean win = getIntent().getExtras().getBoolean(Extra.WIN);
         TextView winLabel = (TextView) findViewById(R.id.score_win_label);
         TextView loseLabel = (TextView) findViewById(R.id.score_lose_label);
+        ImageView winImage = (ImageView) findViewById(R.id.score_win_image);
+        ImageView loseImage = (ImageView) findViewById(R.id.score_lose_image);
 
         int winVisible = View.VISIBLE, loseVisible = View.VISIBLE;
         if (win) {
@@ -36,8 +39,9 @@ public class ScoreActivity extends AppCompatActivity {
         }
 
         winLabel.setVisibility(winVisible);
+        winImage.setVisibility(winVisible);
         loseLabel.setVisibility(loseVisible);
-
+        loseImage.setVisibility(loseVisible);
     }
 
 
@@ -62,8 +66,7 @@ public class ScoreActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i){
                 switch (i){
                     case DialogInterface.BUTTON_POSITIVE:
-//                        Intent intent = new Intent(ScoreActivity.this, PlayerNameActivity.class);
-//                        startActivity(intent);
+
                         String name = preferences.getString("PlayerName", "");
                         BattleShipsApplication.getGame().init(name);
                         break;
@@ -90,15 +93,5 @@ public class ScoreActivity extends AppCompatActivity {
         openDialogToRestart();
     }
 
-//    public void onClickBoard(View v){
-////        Intent intent = new Intent(ScoreActivity.this, BoardActivity.class);
-////        startActivity(intent);
-//        CustomViewPager mViewPager;
-//
-//        setContentView(R.layout.activity_game_session);
-//        mViewPager = (CustomViewPager) findViewById(R.id.board_viewpager);
-//        mViewPager.setAdapter(new BoardActivity.SectionsPagerAdapter(getSupportFragmentManager()));
-//        mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
-//    }
 
 }

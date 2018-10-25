@@ -19,4 +19,6 @@
     <string name="put_ship_error">Impossible de placer le navire ici</string>
     <string name="win">Gagné</string>
     <string name="lose">Perdu</string>
+    <string name="playagain">Rejouer</string>
+    <string name="changename">Changer de nom</string>
 </resources>

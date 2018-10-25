@@ -73,9 +73,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/instruction_textview"
                     android:layout_alignRight="@id/instruction_textview"
-                    android:text="Retour"
+                    android:text="Recommencer"
                     android:id="@+id/btn_score"
-                    android:onClick="onClickScore"/>
+                    android:onClick="onClickRestart"/>
             </RelativeLayout>
 
         </RelativeLayout>

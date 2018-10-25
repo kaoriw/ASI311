@@ -77,87 +77,85 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     // TODO  call me maybe
     private void doPlayerTurn(int x, int y) {
-            new AsyncTask<Integer, String, Boolean>() {
-                private String DISPLAY_TEXT = "0", DISPLAY_HIT = "1";
+        new AsyncTask<Integer, String, Boolean>() {
+            private String DISPLAY_TEXT = "0", DISPLAY_HIT = "1";
 
-                @Override
-                protected Boolean doInBackground(Integer... params) {
-                    Boolean hitAgain = null;
-                    //do {
-                    int[] coordinate = {params[0], params[1]};
-                    int x = params[0];
-                    int y = params[1];
-                    boolean hitflag = false; //true si on a déjà tiré sur la case
-                    sleep(Default.TURN_DELAY);
-                    publishProgress("...");
-                    //                    sleep(Default.TURN_DELAY);
-                    mPlayerTurn = false;
-                    Hit hit = null;
-                    Log.d("HitState", "doInBackground: " + mBoardController.getHit(x, y));
+            @Override
+            protected Boolean doInBackground(Integer... params) {
+                Boolean hitAgain = null;
+                //do {
+                int[] coordinate = {params[0], params[1]};
+                int x = params[0];
+                int y = params[1];
+                boolean hitflag = false; //true si on a déjà tiré sur la case
+                sleep(Default.TURN_DELAY);
+                publishProgress("...");
+                //                    sleep(Default.TURN_DELAY);
+                mPlayerTurn = false;
+                Hit hit = null;
+                Log.d("HitState", "doInBackground: myhit" + mBoardController.getHit(x, y));
 
-                    if(mBoardController.getHit(x,y) != null && !mBoardController.getHit(x,y)){
+
+                //pb : les hits de l'adversaire sont stockés dans notre grille aussi
+                if(mBoardController.getHit(x,y) == null){
+                    hit = mOpponentBoard.sendHit(x, y);
+                    hitAgain = hit != Hit.MISS;
+                }
+                else {
+                    if (!mBoardController.getHit(x, y)) {
                         hit = Hit.ALREADY_MISSED;
                         hitAgain = true;
-
-                    }
-                    else if(mBoardController.getHit(x,y) != null && mBoardController.getHit(x,y)){
+                    } else {
                         hit = Hit.ALREADY_STRUCK;
                         hitAgain = true;
                     }
-                    else{
-                        hit = mOpponentBoard.sendHit(x, y);
-                        hitAgain = hit != Hit.MISS;
+                }
+
+                publishProgress(DISPLAY_TEXT, makeHitMessage(false, coordinate, hit));
+                publishProgress(DISPLAY_HIT, String.valueOf(hitAgain), String.valueOf(x), String.valueOf(y), hit.toString());
+                mDone = updateScore();
+                sleep(Default.TURN_DELAY);
+
+                //} while (hitAgain && !mDone);
+                Log.d("HitState", "doInBackground: hitAgain = " + hitAgain + " hit = " + hit.toString());
+                Log.d("HitState", "doInBackground: AIhit = " + mOpponentBoard.getHit(x,y));
+                return hitAgain;
+            }
+
+            @Override
+            protected void onProgressUpdate(String... values) {
+                if (values[0].equals(DISPLAY_TEXT)) {
+                    showMessage(values[1]);
+                } else if (values[0].equals(DISPLAY_HIT)) {
+                    if(!values[4].equals(Hit.ALREADY_MISSED.toString()) && !values[4].equals(Hit.ALREADY_STRUCK.toString())){
+                        mBoardController.setHit(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
                     }
-                    publishProgress(DISPLAY_TEXT, makeHitMessage(false, coordinate, hit));
-                    publishProgress(DISPLAY_HIT, String.valueOf(hitAgain), String.valueOf(x), String.valueOf(y), hit.toString());
+
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean hitAgain) {
+                if (hitAgain)
+
+                {
+                    mPlayerTurn = true;
                     mDone = updateScore();
+                    if (mDone) {
+                        gotoScoreActivity();
+                    }
+                } else {
+                    // TODO sleep a while...
+                    mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
                     sleep(Default.TURN_DELAY);
-
-                    //} while (hitAgain && !mDone);
-                    return hitAgain;
+                    mViewPager.setEnableSwipe(false);
+                    doOpponentTurn();
                 }
 
-                @Override
-                protected void onProgressUpdate(String... values) {
-                    if (values[0].equals(DISPLAY_TEXT)) {
-                        showMessage(values[1]);
-                    } else if (values[0].equals(DISPLAY_HIT)) {
-                        if(!values[4].equals(Hit.ALREADY_MISSED.toString()) && !values[4].equals(Hit.ALREADY_STRUCK.toString())){
-                            mBoardController.setHit(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
-                        }
-
-                    }
-                }
-
-                @Override
-                protected void onPostExecute(Boolean hitAgain) {
-                    if (hitAgain)
-
-                    {
-                        mPlayerTurn = true;
-                        mDone = updateScore();
-                        if (mDone) {
-                            gotoScoreActivity();
-                        }
-                    } else {
-                        // TODO sleep a while...
-                        mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
-                        sleep(Default.TURN_DELAY);
-                        mViewPager.setEnableSwipe(false);
-                        doOpponentTurn();
-                    }
-
-                }
+            }
 
 
-                //            String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
-                //        Log.d(TAG,msgToLog);
-                //
-                //            showMessage(makeHitMessage(false, new int[] {
-                //                x, y
-                //            },hit));
-                //        }
-            }.execute(x, y);
+        }.execute(x, y);
 
     }
 
@@ -168,21 +166,24 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             @Override
             protected Boolean doInBackground(Void... params) {
                 Hit hit;
-                boolean strike;
+                boolean hitAgain2;
                 do {
                     sleep(Default.TURN_DELAY);
                     publishProgress("...");
                     sleep(Default.TURN_DELAY);
 
                     int[] coordinate = new int[2];
+
                     hit = mOpponent.sendHit(coordinate);
-                    strike = hit != Hit.MISS;
+                    Log.d("AIhit", "doInBackground: "+ mOpponentBoard.getHit(coordinate[0], coordinate[1]) + "playerhit = " + mBoardController.getHit(coordinate[0], coordinate[1]));
+                    hitAgain2 = hit != Hit.MISS;
+
                     publishProgress(DISPLAY_TEXT, makeHitMessage(true, coordinate, hit));
-                    publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(coordinate[0]), String.valueOf(coordinate[1]));
+                    publishProgress(DISPLAY_HIT, String.valueOf(hitAgain2), String.valueOf(coordinate[0]), String.valueOf(coordinate[1]), hit.toString());
 
                     mDone = updateScore();
                     sleep(Default.TURN_DELAY);
-                } while(strike && !mDone);
+                } while(hitAgain2 && !mDone);
                 return mDone;
             }
 
@@ -203,7 +204,9 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 if (values[0].equals(DISPLAY_TEXT)) {
                     showMessage(values[1]);
                 } else if (values[0].equals(DISPLAY_HIT)) {
+
                     mBoardController.displayHitInShipBoard(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+
                 }
             }
 
@@ -316,7 +319,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     @Override
     public void onTileClick(int id, int x, int y) {
         if(mPlayerTurn && id == BoardController.HITS_FRAGMENT){
-           doPlayerTurn(x,y);
+            doPlayerTurn(x,y);
 
         }
     }
@@ -326,9 +329,9 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     }
 
-//    public void onClickScore(View v){
-//        Intent intent = new Intent(BoardActivity.this, ScoreActivity.class);
-//        startActivity(intent);
-//    }
+    public void onClickRestart(View v){
+        String name = BattleShipsApplication.getPlayers()[0].getName();
+        BattleShipsApplication.getGame().init(name);
+    }
 
 }

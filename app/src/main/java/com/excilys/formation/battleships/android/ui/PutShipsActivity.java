@@ -2,7 +2,6 @@ package com.excilys.formation.battleships.android.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,6 @@ import battleships.ShipException;
 import battleships.formation.excilys.com.battleships.R;
 import battleships.ship.AbstractShip;
 
-import static java.lang.Thread.sleep;
 
 public class PutShipsActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener {
     private static final String TAG = PutShipsActivity.class.getSimpleName();
@@ -208,5 +206,14 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         mCurrentShip = 0;
         int playerId = 0;
         BattleShipsApplication.getGame().init(BattleShipsApplication.getPlayers()[playerId].getName());
+    }
+
+    public void onClickChangeName(View v){
+        finish();
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("Pref", MODE_PRIVATE);
+        preferences.edit().putString("PlayerName", "").apply();
+        Intent intent = new Intent(PutShipsActivity.this, PlayerNameActivity.class);
+        startActivity(intent);
+
     }
 }
