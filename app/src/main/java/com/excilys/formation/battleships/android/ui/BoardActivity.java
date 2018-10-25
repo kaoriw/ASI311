@@ -82,7 +82,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
                 @Override
                 protected Boolean doInBackground(Integer... params) {
-                    Boolean strike = null;
+                    Boolean hitAgain = null;
                     //do {
                     int[] coordinate = {params[0], params[1]};
                     int x = params[0];
@@ -97,24 +97,24 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
                     if(mBoardController.getHit(x,y) != null && !mBoardController.getHit(x,y)){
                         hit = Hit.ALREADY_MISSED;
-                        strike = false;
+                        hitAgain = true;
 
                     }
                     else if(mBoardController.getHit(x,y) != null && mBoardController.getHit(x,y)){
                         hit = Hit.ALREADY_STRUCK;
-                        strike = true;
+                        hitAgain = true;
                     }
                     else{
                         hit = mOpponentBoard.sendHit(x, y);
-                        strike = hit != Hit.MISS;
+                        hitAgain = hit != Hit.MISS;
                     }
                     publishProgress(DISPLAY_TEXT, makeHitMessage(false, coordinate, hit));
-                    publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(x), String.valueOf(y), hit.toString());
+                    publishProgress(DISPLAY_HIT, String.valueOf(hitAgain), String.valueOf(x), String.valueOf(y), hit.toString());
                     mDone = updateScore();
                     sleep(Default.TURN_DELAY);
 
-                    //} while (strike && !mDone);
-                    return strike;
+                    //} while (hitAgain && !mDone);
+                    return hitAgain;
                 }
 
                 @Override
@@ -130,8 +130,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 }
 
                 @Override
-                protected void onPostExecute(Boolean strike) {
-                    if (strike)
+                protected void onPostExecute(Boolean hitAgain) {
+                    if (hitAgain)
 
                     {
                         mPlayerTurn = true;
