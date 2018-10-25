@@ -3,7 +3,6 @@ package com.excilys.formation.battleships.android.ui;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,15 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-
-import java.util.Locale;
 
 import battleships.Board;
 import battleships.Hit;
 import battleships.Player;
-import battleships.ShipException;
 import battleships.formation.excilys.com.battleships.R;
 import battleships.ship.AbstractShip;
 
@@ -68,14 +63,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         mBoardController = BattleShipsApplication.getBoard();
         mOpponentBoard = BattleShipsApplication.getOpponentBoard();
         mOpponent = BattleShipsApplication.getPlayers()[1];
-//        Button backToScore = (Button)findViewById(R.id.btn_score);
-//        backToScore.setVisibility(View.INVISIBLE);
-//        if(mDone){
-//            backToScore.setVisibility(View.VISIBLE);
-//        }
     }
 
-    // TODO  call me maybe
     private void doPlayerTurn(int x, int y) {
         new AsyncTask<Integer, String, Boolean>() {
             private String DISPLAY_TEXT = "0", DISPLAY_HIT = "1";
@@ -83,7 +72,6 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             @Override
             protected Boolean doInBackground(Integer... params) {
                 Boolean hitAgain = null;
-                //do {
                 int[] coordinate = {params[0], params[1]};
                 int x = params[0];
                 int y = params[1];
@@ -91,14 +79,15 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 publishProgress("...");
                 mPlayerTurn = false;
                 Hit hit = null;
-                Log.d("HitState", "doInBackground: myhit = " + mBoardController.getHit(x, y));
-
 
                 if(mBoardController.getHit(x,y) == null){
                     hit = mOpponentBoard.sendHit(x, y);
                     hitAgain = hit != Hit.MISS;
                 }
                 else {
+                    //Si la case avait déjà été frappée, on attribue manuellement la valeur de hit.
+                    //En effet la fonction sendHit ci-dessous est une méthode de mOpponentBoard,
+                    // donc on ne peut pas récupérer l'état des cases depuis cette méthode.
                     if (!mBoardController.getHit(x, y)) {
                         hit = Hit.ALREADY_MISSED;
                         hitAgain = true;
@@ -113,9 +102,6 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 mDone = updateScore();
                 sleep(Default.TURN_DELAY);
 
-                //} while (hitAgain && !mDone);
-                Log.d("HitState", "doInBackground: hitAgain = " + hitAgain + ", hit = " + hit.toString());
-                Log.d("HitState", "doInBackground: AIhit = " + mOpponentBoard.getHit(x,y));
                 return hitAgain;
             }
 
@@ -127,7 +113,6 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                     if(!values[4].equals(Hit.ALREADY_MISSED.toString()) && !values[4].equals(Hit.ALREADY_STRUCK.toString())){
                         mBoardController.setHit(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
                     }
-
                 }
             }
 
@@ -142,7 +127,6 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                         gotoScoreActivity();
                     }
                 } else {
-                    // TODO sleep a while...
                     mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
                     sleep(Default.TURN_DELAY);
                     mViewPager.setEnableSwipe(false);
@@ -172,11 +156,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                     int[] coordinate = new int[2];
 
                     hit = mOpponent.sendHit(coordinate);
-                    int x = coordinate[0];
-                    int y = coordinate[1];
 
-                    Log.d("AIhit", "doInBackground: "+ mOpponentBoard.getHit(coordinate[0], coordinate[1]) + " playerhit = " + mBoardController.getHit(coordinate[0], coordinate[1]));
-
+                    //ici la méthode mOpponent.sendHit peut retourner directement les frappes ALREADY_STRUCK/MISSED
                     if(hit == Hit.ALREADY_MISSED || hit == Hit.ALREADY_STRUCK){
                         hitAgain = true;
                     }

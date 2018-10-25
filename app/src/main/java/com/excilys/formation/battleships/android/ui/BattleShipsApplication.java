@@ -70,21 +70,13 @@ public class BattleShipsApplication extends Application {
          */
         private Player mPlayer1;
         private Player mPlayer2;
-//        private BoardController mBoard;
-//        private Board mOpponentBoard;
-//        private Game mGame;
+
         /* ***
          * Methods
          */
         public Game() {
         }
 
-//        public BoardController getBoard(){
-//            return this.mBoard;
-//        }
-//        public Board getOpponentBoard(){
-//            return this.mOpponentBoard;
-//        }
 
         public Game init(String playerName) {
 

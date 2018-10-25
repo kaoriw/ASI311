@@ -1,18 +1,13 @@
 package com.excilys.formation.battleships.android.ui;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import battleships.formation.excilys.com.battleships.R;
-import android.support.design.widget.CoordinatorLayout;
 
 public class PlayerNameActivity extends AppCompatActivity {
     EditText mNameEditText;
@@ -36,10 +31,8 @@ public class PlayerNameActivity extends AppCompatActivity {
     public void onClickButton(View v) {
         String name = mNameEditText.getText().toString();
         if (!name.isEmpty()) {
-//            Toast.makeText(PlayerNameActivity.this, name, Toast.LENGTH_LONG).show();
             Snackbar.make(findViewById(R.id.main_name), name, Snackbar.LENGTH_SHORT);
             preferences.edit().putString("PlayerName", name).apply();
-            Log.d("PlayerName", preferences.getString("PlayeName", name));
             BattleShipsApplication.getGame().init(name);
 
         }

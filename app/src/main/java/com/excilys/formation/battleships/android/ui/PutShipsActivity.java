@@ -48,7 +48,6 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
         // Setup the layout
         setContentView(R.layout.activity_put_ships);
-        //Snackbar.make(findViewById(R.id.main_content), BattleShipsApplication.getPlayers()[0].getName(), Snackbar.LENGTH_SHORT);
 
         // Init the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -101,35 +100,15 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
             Snackbar.make(findViewById(R.id.main_content), "Vous avez déjà placé tous les navires !", Snackbar.LENGTH_SHORT).show();
         }
         catch (Exception e) {
-            //Toast.makeText(this, R.string.put_ship_error, Toast.LENGTH_LONG).show();
             Snackbar.make(findViewById(R.id.main_content), R.string.put_ship_error, Snackbar.LENGTH_SHORT).show();
         }
 
 
-//        if (mCurrentShip >= mShips.length) {
-//            new AsyncTask<Void, Void, Boolean>(){
-//                @Override
-//                protected Boolean doInBackground(Void... params){
-//                    try {
-//                        Thread.sleep(500);
-//                        gotoBoardActivity();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    return false;
-//                }
-//
-////                @Override
-////                protected void onPostExecute(Boolean... result) {
-////                    gotoBoardActivity();
-////                }
-//            }.execute();
-//        } else {
+
         if(mCurrentShip < mShips.length) {
             updateRadioButton();
         }
 
-//        }
     }
 
     private void gotoBoardActivity() {
