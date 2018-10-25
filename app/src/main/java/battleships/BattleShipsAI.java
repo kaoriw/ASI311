@@ -107,17 +107,28 @@ public class BattleShipsAI {
             res = pickRandomCoord();
         }
         Hit hit = null;
-        try {
-            hit = opponent.sendHit(res[0], res[1]);
-        } catch (ShipException e) {
-            e.getMessage();
-        }
-        board.setHit(hit != Hit.MISS, res[0], res[1]);
-        if (hit != Hit.MISS) {
-            if (lastStrike != null) {
-                lastVertical = guessOrientation(lastStrike, res);
+        if(board.getHit(res[0],res[1])!= null){
+            if(board.getHit(res[0],res[1])){
+                hit = Hit.ALREADY_STRUCK;
             }
-            lastStrike = res;
+            else{
+                hit = Hit.ALREADY_MISSED;
+            }
+        }
+        else{
+            try {
+                hit = opponent.sendHit(res[0], res[1]);
+            } catch (ShipException e) {
+                e.getMessage();
+            }
+            board.setHit(hit != Hit.MISS, res[0], res[1]);
+            if (hit != Hit.MISS) {
+                if (lastStrike != null) {
+                    lastVertical = guessOrientation(lastStrike, res);
+                }
+                lastStrike = res;
+            }
+
         }
 
         coords[0] = res[0];

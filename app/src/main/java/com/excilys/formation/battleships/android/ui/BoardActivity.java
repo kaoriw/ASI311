@@ -87,16 +87,13 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 int[] coordinate = {params[0], params[1]};
                 int x = params[0];
                 int y = params[1];
-                boolean hitflag = false; //true si on a déjà tiré sur la case
                 sleep(Default.TURN_DELAY);
                 publishProgress("...");
-                //                    sleep(Default.TURN_DELAY);
                 mPlayerTurn = false;
                 Hit hit = null;
-                Log.d("HitState", "doInBackground: myhit" + mBoardController.getHit(x, y));
+                Log.d("HitState", "doInBackground: myhit = " + mBoardController.getHit(x, y));
 
 
-                //pb : les hits de l'adversaire sont stockés dans notre grille aussi
                 if(mBoardController.getHit(x,y) == null){
                     hit = mOpponentBoard.sendHit(x, y);
                     hitAgain = hit != Hit.MISS;
@@ -117,7 +114,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 sleep(Default.TURN_DELAY);
 
                 //} while (hitAgain && !mDone);
-                Log.d("HitState", "doInBackground: hitAgain = " + hitAgain + " hit = " + hit.toString());
+                Log.d("HitState", "doInBackground: hitAgain = " + hitAgain + ", hit = " + hit.toString());
                 Log.d("HitState", "doInBackground: AIhit = " + mOpponentBoard.getHit(x,y));
                 return hitAgain;
             }
@@ -166,7 +163,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             @Override
             protected Boolean doInBackground(Void... params) {
                 Hit hit;
-                boolean hitAgain2;
+                boolean hitAgain;
                 do {
                     sleep(Default.TURN_DELAY);
                     publishProgress("...");
@@ -175,15 +172,24 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                     int[] coordinate = new int[2];
 
                     hit = mOpponent.sendHit(coordinate);
-                    Log.d("AIhit", "doInBackground: "+ mOpponentBoard.getHit(coordinate[0], coordinate[1]) + "playerhit = " + mBoardController.getHit(coordinate[0], coordinate[1]));
-                    hitAgain2 = hit != Hit.MISS;
+                    int x = coordinate[0];
+                    int y = coordinate[1];
+
+                    Log.d("AIhit", "doInBackground: "+ mOpponentBoard.getHit(coordinate[0], coordinate[1]) + " playerhit = " + mBoardController.getHit(coordinate[0], coordinate[1]));
+
+                    if(hit == Hit.ALREADY_MISSED || hit == Hit.ALREADY_STRUCK){
+                        hitAgain = true;
+                    }
+                    else{
+                        hitAgain = hit != Hit.MISS;
+                    }
 
                     publishProgress(DISPLAY_TEXT, makeHitMessage(true, coordinate, hit));
-                    publishProgress(DISPLAY_HIT, String.valueOf(hitAgain2), String.valueOf(coordinate[0]), String.valueOf(coordinate[1]), hit.toString());
+                    publishProgress(DISPLAY_HIT, String.valueOf(hitAgain), String.valueOf(coordinate[0]), String.valueOf(coordinate[1]), hit.toString());
 
                     mDone = updateScore();
                     sleep(Default.TURN_DELAY);
-                } while(hitAgain2 && !mDone);
+                } while(hitAgain && !mDone);
                 return mDone;
             }
 
@@ -204,8 +210,9 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 if (values[0].equals(DISPLAY_TEXT)) {
                     showMessage(values[1]);
                 } else if (values[0].equals(DISPLAY_HIT)) {
-
-                    mBoardController.displayHitInShipBoard(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+                    if(!values[4].equals(Hit.ALREADY_MISSED.toString()) && !values[4].equals(Hit.ALREADY_STRUCK.toString())){
+                        mBoardController.displayHitInShipBoard(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+                    }
 
                 }
             }

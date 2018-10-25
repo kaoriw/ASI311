@@ -90,30 +90,21 @@ public class Board implements IBoard {
     public Hit sendHit(int x, int y) {
         ShipState state;
 
-        if(this.hits[x][y] == null) {
-            if (ships[x][y] == null) {
+        if (ships[x][y] == null) {
+            return Hit.MISS;
+        } else {
+            state = ships[x][y];
+            if (state.isStruck()) {
                 return Hit.MISS;
             } else {
-                state = ships[x][y];
-                if (state.isStruck()) {
-                    return Hit.MISS;
+                state.addStrike();
+                if (state.isSunk()) {
+                    return Hit.fromInt(state.getShip().getLength());
                 } else {
-                    state.addStrike();
-                    if (state.isSunk()) {
-                        return Hit.fromInt(state.getShip().getLength());
-                    } else {
-                        return Hit.STRIKE;
-                    }
+                    return Hit.STRIKE;
                 }
             }
         }
-        else if(this.hits[x][y] == true){
-            return Hit.ALREADY_STRUCK;
-        }
-        else {
-            return Hit.ALREADY_MISSED;
-        }
-
 
     }
 

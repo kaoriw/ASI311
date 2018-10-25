@@ -52,7 +52,7 @@
             <!-- The area displaying instructions -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/board_viewpager"
                 android:layout_alignParentBottom="true">
 
@@ -72,10 +72,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/instruction_textview"
-                    android:layout_alignRight="@id/instruction_textview"
-                    android:text="Recommencer"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/restart"
                     android:id="@+id/btn_score"
                     android:onClick="onClickRestart"/>
+
             </RelativeLayout>
 
         </RelativeLayout>

@@ -21,4 +21,5 @@
     <string name="lose">Perdu</string>
     <string name="playagain">Rejouer</string>
     <string name="changename">Changer de nom</string>
+    <string name="restart">Recommencer</string>
 </resources>
