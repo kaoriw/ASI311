@@ -48,7 +48,12 @@ public class BoardController implements IBoard {
     @Override
     public Hit sendHit(int x, int y) {
         // TODO decor me
-        Hit hit = mBoard.sendHit(x,y);
+        Hit hit = null;
+        try {
+            hit = mBoard.sendHit(x,y);
+        } catch (ShipException e) {
+            e.getMessage();
+        }
         displayHitInShipBoard(mBoard.getHit(x,y), x, y);
 
         return hit;
@@ -60,7 +65,7 @@ public class BoardController implements IBoard {
     }
 
     @Override
-    public void putShip(AbstractShip ship, int x, int y) {
+    public void putShip(AbstractShip ship, int x, int y) throws ShipException {
         if (!(ship instanceof DrawableShip)) {
             throw new IllegalArgumentException("Cannot put a Ship that does not implement DrawableShip.");
         }
@@ -73,6 +78,7 @@ public class BoardController implements IBoard {
         }
         catch(ShipException E){
             System.err.println(E.getMessage());
+            throw new ShipException(E.getMessage());
         }
 
 
@@ -99,7 +105,7 @@ public class BoardController implements IBoard {
     }
 
     @Override
-    public void setHit(boolean hit, int x, int y) {
+    public void setHit(Boolean hit, int x, int y) {
         // TODO decore me
         mBoard.setHit(hit, x, y);
         mHitsFragment.putDrawable(hit ? R.drawable.hit : R.drawable.miss, x, y);

@@ -9,7 +9,9 @@ public enum Hit {
     DESTROYER(2, "Frégate"),
     SUBMARINE(3, "Sous-marin"),
     BATTLESHIP(4, "Croiseur"),
-    CARRIER(5, "Porte-avion")
+    CARRIER(5, "Porte-avion"),
+    ALREADY_STRUCK(1, "déjà touché"),
+    ALREADY_MISSED(0, "déjà manqué")
     ;
     private int value;
     private String label;

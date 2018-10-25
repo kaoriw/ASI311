@@ -6,28 +6,54 @@
     android:layout_height="match_parent"
     android:padding="@dimen/activity_vertical_margin"
     tools:context="com.excilys.formation.battleships.android.ui.ScoreActivity">
-
-    <TextView
-        android:id="@+id/score_win_label"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:id="@+id/main-label"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+        <TextView
+            android:id="@+id/score_win_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
 
-        android:text="@string/win"
-        android:textColor="@color/colorWin"
-        android:textAlignment="center"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+            android:text="@string/win"
+            android:textColor="@color/colorWin"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Large" />
 
-    <TextView
-        android:id="@+id/score_lose_label"
+        <TextView
+            android:id="@+id/score_lose_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+
+            android:text="@string/lose"
+            android:textColor="@color/colorLose"
+            android:visibility="gone"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textAlignment="center" />
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_below="@id/main-label"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rejouer"
+            android:onClick="onClickRestart"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Voir la grille"
+            android:onClick="onClickBoard"/>
+    </LinearLayout>
 
 
-        android:text="Perdu !"
-        android:textColor="@color/colorLose"
-        android:visibility="gone"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:textAlignment="center" />
 </RelativeLayout>

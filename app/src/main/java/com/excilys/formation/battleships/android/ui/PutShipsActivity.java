@@ -1,8 +1,10 @@
 package com.excilys.formation.battleships.android.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,10 +13,10 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Locale;
 
+import battleships.ShipException;
 import battleships.formation.excilys.com.battleships.R;
 import battleships.ship.AbstractShip;
 
@@ -40,6 +42,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private int mCurrentShip;
     private AbstractShip[] mShips;
     Fragment mFragment;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
         // Setup the layout
         setContentView(R.layout.activity_put_ships);
+        //Snackbar.make(findViewById(R.id.main_content), BattleShipsApplication.getPlayers()[0].getName(), Snackbar.LENGTH_SHORT);
 
         // Init the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -75,7 +79,9 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
                             mFragment)
                     .commit();
         }
-
+        preferences = getApplicationContext().getSharedPreferences("Pref", MODE_PRIVATE);
+        Snackbar.make(findViewById(R.id.main_content), "Bienvenue, " + preferences.getString("PlayerName", ""), Snackbar.LENGTH_SHORT).show();
+        Log.d("PlayerName", preferences.getString("PlayerName", ""));
         updateRadioButton();
         updateNextShipNameToDisplay();
     }
@@ -89,9 +95,18 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
             mBoard.putShip(mShips[mCurrentShip], x, y);
             mCurrentShip++;
             updateNextShipNameToDisplay();
-        } catch (Exception e) {
-            Toast.makeText(this, R.string.put_ship_error, Toast.LENGTH_LONG).show();
         }
+        catch (ShipException e){
+            Snackbar.make(findViewById(R.id.main_content), R.string.put_ship_error, Snackbar.LENGTH_SHORT).show();
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            Snackbar.make(findViewById(R.id.main_content), "Vous avez déjà placé tous les navires !", Snackbar.LENGTH_SHORT).show();
+        }
+        catch (Exception e) {
+            //Toast.makeText(this, R.string.put_ship_error, Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.main_content), R.string.put_ship_error, Snackbar.LENGTH_SHORT).show();
+        }
+
 
 //        if (mCurrentShip >= mShips.length) {
 //            new AsyncTask<Void, Void, Boolean>(){
@@ -115,6 +130,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         if(mCurrentShip < mShips.length) {
             updateRadioButton();
         }
+
 //        }
     }
 
@@ -184,7 +200,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         }
         else
         {
-            Toast.makeText(PutShipsActivity.this, "Vous n'avez pas placé tous les navires", Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.main_content), "Vous n'avez pas placé tous les navires", Snackbar.LENGTH_SHORT).show();
         }
     }
 

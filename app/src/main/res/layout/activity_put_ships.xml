@@ -122,13 +122,13 @@
                     android:layout_below="@id/putship_radios_orientation"
                     android:layout_centerHorizontal="true">
                     <Button
-                        android:id="@+id/btn-start"
+                        android:id="@+id/btn_start"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Jouer"
                         android:onClick="onClickStart"/>
                     <Button
-                        android:id="@+id/btn-reset"
+                        android:id="@+id/btn_reset"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Recommencer"

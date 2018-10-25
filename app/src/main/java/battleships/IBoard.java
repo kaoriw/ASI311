@@ -12,7 +12,7 @@ public interface IBoard {
      * @param y
      * @return status for the hit (eg : strike or miss)
      */
-    Hit sendHit(int x, int y);
+    Hit sendHit(int x, int y) throws ShipException;
 
     /**
      * @return the size of the Board
@@ -42,7 +42,7 @@ public interface IBoard {
      * @param x
      * @param y
      */
-    void setHit(boolean hit, int x, int y);
+    void setHit(Boolean hit, int x, int y);
 
     /**
      * Get the state of a hit at the given position

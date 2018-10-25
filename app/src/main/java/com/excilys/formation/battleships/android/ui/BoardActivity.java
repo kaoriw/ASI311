@@ -3,11 +3,15 @@ package com.excilys.formation.battleships.android.ui;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -15,6 +19,7 @@ import java.util.Locale;
 import battleships.Board;
 import battleships.Hit;
 import battleships.Player;
+import battleships.ShipException;
 import battleships.formation.excilys.com.battleships.R;
 import battleships.ship.AbstractShip;
 
@@ -63,73 +68,97 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         mBoardController = BattleShipsApplication.getBoard();
         mOpponentBoard = BattleShipsApplication.getOpponentBoard();
         mOpponent = BattleShipsApplication.getPlayers()[1];
+//        Button backToScore = (Button)findViewById(R.id.btn_score);
+//        backToScore.setVisibility(View.INVISIBLE);
+//        if(mDone){
+//            backToScore.setVisibility(View.VISIBLE);
+//        }
     }
 
     // TODO  call me maybe
     private void doPlayerTurn(int x, int y) {
-        new AsyncTask<Integer, String, Boolean>() {
-            private String DISPLAY_TEXT = "0", DISPLAY_HIT = "1";
+            new AsyncTask<Integer, String, Boolean>() {
+                private String DISPLAY_TEXT = "0", DISPLAY_HIT = "1";
 
-            @Override
-            protected Boolean doInBackground(Integer... params) {
-                boolean strike;
-                //do {
+                @Override
+                protected Boolean doInBackground(Integer... params) {
+                    Boolean strike = null;
+                    //do {
                     int[] coordinate = {params[0], params[1]};
                     int x = params[0];
                     int y = params[1];
-
+                    boolean hitflag = false; //true si on a déjà tiré sur la case
                     sleep(Default.TURN_DELAY);
                     publishProgress("...");
-//                    sleep(Default.TURN_DELAY);
+                    //                    sleep(Default.TURN_DELAY);
                     mPlayerTurn = false;
-                    Hit hit = mOpponentBoard.sendHit(x, y);
-                    strike = hit != Hit.MISS;
-                    publishProgress(DISPLAY_TEXT, makeHitMessage(false, coordinate, hit));
-                    publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(x), String.valueOf(y));
-                    mDone = updateScore();
-                    sleep(Default.TURN_DELAY);
-                //} while (strike && !mDone);
-                return strike;
-            }
+                    Hit hit = null;
+                    Log.d("HitState", "doInBackground: " + mBoardController.getHit(x, y));
 
-            @Override
-            protected void onProgressUpdate(String... values) {
-                if (values[0].equals(DISPLAY_TEXT)) {
-                    showMessage(values[1]);
-                } else if (values[0].equals(DISPLAY_HIT)) {
-                    mBoardController.setHit(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
-                }
-            }
+                    if(mBoardController.getHit(x,y) != null && !mBoardController.getHit(x,y)){
+                        hit = Hit.ALREADY_MISSED;
+                        strike = false;
 
-            @Override
-            protected void onPostExecute(Boolean strike) {
-                if (strike)
-
-                {
-                    mPlayerTurn = true;
-                    mDone = updateScore();
-                    if (mDone) {
-                        gotoScoreActivity();
                     }
-                } else {
-                    // TODO sleep a while...
-                    mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
+                    else if(mBoardController.getHit(x,y) != null && mBoardController.getHit(x,y)){
+                        hit = Hit.ALREADY_STRUCK;
+                        strike = true;
+                    }
+                    else{
+                        hit = mOpponentBoard.sendHit(x, y);
+                        strike = hit != Hit.MISS;
+                    }
+                    publishProgress(DISPLAY_TEXT, makeHitMessage(false, coordinate, hit));
+                    publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(x), String.valueOf(y), hit.toString());
+                    mDone = updateScore();
                     sleep(Default.TURN_DELAY);
-                    mViewPager.setEnableSwipe(false);
-                    doOpponentTurn();
+
+                    //} while (strike && !mDone);
+                    return strike;
                 }
 
-            }
+                @Override
+                protected void onProgressUpdate(String... values) {
+                    if (values[0].equals(DISPLAY_TEXT)) {
+                        showMessage(values[1]);
+                    } else if (values[0].equals(DISPLAY_HIT)) {
+                        if(!values[4].equals(Hit.ALREADY_MISSED.toString()) && !values[4].equals(Hit.ALREADY_STRUCK.toString())){
+                            mBoardController.setHit(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+                        }
+
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(Boolean strike) {
+                    if (strike)
+
+                    {
+                        mPlayerTurn = true;
+                        mDone = updateScore();
+                        if (mDone) {
+                            gotoScoreActivity();
+                        }
+                    } else {
+                        // TODO sleep a while...
+                        mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
+                        sleep(Default.TURN_DELAY);
+                        mViewPager.setEnableSwipe(false);
+                        doOpponentTurn();
+                    }
+
+                }
 
 
-//            String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
-//        Log.d(TAG,msgToLog);
-//
-//            showMessage(makeHitMessage(false, new int[] {
-//                x, y
-//            },hit));
-//        }
-        }.execute(x, y);
+                //            String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
+                //        Log.d(TAG,msgToLog);
+                //
+                //            showMessage(makeHitMessage(false, new int[] {
+                //                x, y
+                //            },hit));
+                //        }
+            }.execute(x, y);
+
     }
 
     private void doOpponentTurn() {
@@ -257,6 +286,12 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             case STRIKE:
                 msg = hit.toString();
                 break;
+            case ALREADY_MISSED:
+                msg = hit.toString();
+                break;
+            case ALREADY_STRUCK:
+                msg = hit.toString();
+                break;
             default:
                 msg = String.format(getString(R.string.board_ship_sunk_format), hit.toString());
         }
@@ -280,8 +315,9 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     @Override
     public void onTileClick(int id, int x, int y) {
-        if(id == BoardController.HITS_FRAGMENT){
-            doPlayerTurn( x, y);
+        if(mPlayerTurn && id == BoardController.HITS_FRAGMENT){
+           doPlayerTurn(x,y);
+
         }
     }
 
@@ -290,5 +326,9 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     }
 
+//    public void onClickScore(View v){
+//        Intent intent = new Intent(BoardActivity.this, ScoreActivity.class);
+//        startActivity(intent);
+//    }
 
 }

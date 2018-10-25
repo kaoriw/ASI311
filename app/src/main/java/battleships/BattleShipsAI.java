@@ -61,8 +61,8 @@ public class BattleShipsAI {
             } while(!canPutShip(s, x, y));
             try {
                 board.putShip(s, x, y);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (ShipException e) {
+                System.err.println(e.getMessage());
             }
         }
     }
@@ -106,7 +106,12 @@ public class BattleShipsAI {
         if (lastStrike == null) {
             res = pickRandomCoord();
         }
-        Hit hit = opponent.sendHit(res[0], res[1]);
+        Hit hit = null;
+        try {
+            hit = opponent.sendHit(res[0], res[1]);
+        } catch (ShipException e) {
+            e.getMessage();
+        }
         board.setHit(hit != Hit.MISS, res[0], res[1]);
         if (hit != Hit.MISS) {
             if (lastStrike != null) {

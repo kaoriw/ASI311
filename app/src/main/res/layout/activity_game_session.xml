@@ -31,6 +31,7 @@
 
             </android.support.v7.widget.Toolbar>
 
+
         </android.support.design.widget.AppBarLayout>
 
         <RelativeLayout
@@ -67,7 +68,14 @@
                     android:textAlignment="center"
                     android:textSize="28sp" />
 
-
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/instruction_textview"
+                    android:layout_alignRight="@id/instruction_textview"
+                    android:text="Retour"
+                    android:id="@+id/btn_score"
+                    android:onClick="onClickScore"/>
             </RelativeLayout>
 
         </RelativeLayout>

@@ -1,11 +1,16 @@
 package com.excilys.formation.battleships.android.ui;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import battleships.formation.excilys.com.battleships.R;
+import battleships.ship.BattleShip;
 
 public class ScoreActivity extends AppCompatActivity {
 
@@ -35,9 +40,65 @@ public class ScoreActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     public void onBackPressed(){
 
     }
+
+    public void openDialogToRestart() {
+
+        final SharedPreferences preferences = getApplicationContext().getSharedPreferences("Pref", MODE_PRIVATE);
+
+    // TODO Changer l'activity
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ScoreActivity.this);
+
+    //TODO Ajouter un message à la dialog et l'empêcher qu'elle soit fermée sans cliquer sur un bouton.
+    //TODO Utiliser pour cela .setCancelable(boolean) sur le builder.
+        alertDialogBuilder.setMessage("Voulez-vous recommencer le jeu ?");
+        alertDialogBuilder.setCancelable(false);
+        DialogInterface.OnClickListener onClickDialogListener = new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i){
+                switch (i){
+                    case DialogInterface.BUTTON_POSITIVE:
+//                        Intent intent = new Intent(ScoreActivity.this, PlayerNameActivity.class);
+//                        startActivity(intent);
+                        String name = preferences.getString("PlayerName", "");
+                        BattleShipsApplication.getGame().init(name);
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialogInterface.cancel();
+                        break;
+                }
+            }
+        };
+
+        alertDialogBuilder.setPositiveButton("Oui", onClickDialogListener);
+
+        alertDialogBuilder.setNegativeButton("Non", onClickDialogListener);
+
+
+        // Créer l' Alert dialog en utilisant la méthode .create() sur le builder.
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // Afficher l'Alert dialog en appelant la méthode .show() sur celle-ci.
+        alertDialog.show();
+    }
+
+    public void onClickRestart(View v){
+        openDialogToRestart();
+    }
+
+//    public void onClickBoard(View v){
+////        Intent intent = new Intent(ScoreActivity.this, BoardActivity.class);
+////        startActivity(intent);
+//        CustomViewPager mViewPager;
+//
+//        setContentView(R.layout.activity_game_session);
+//        mViewPager = (CustomViewPager) findViewById(R.id.board_viewpager);
+//        mViewPager.setAdapter(new BoardActivity.SectionsPagerAdapter(getSupportFragmentManager()));
+//        mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
+//    }
 
 }

@@ -90,21 +90,31 @@ public class Board implements IBoard {
     public Hit sendHit(int x, int y) {
         ShipState state;
 
-        if (ships[x][y] == null) {
-            return Hit.MISS;
-        } else {
-            state = ships[x][y];
-            if (state.isStruck()) {
+        if(this.hits[x][y] == null) {
+            if (ships[x][y] == null) {
                 return Hit.MISS;
             } else {
-                state.addStrike();
-                if (state.isSunk()) {
-                    return Hit.fromInt(state.getShip().getLength());
+                state = ships[x][y];
+                if (state.isStruck()) {
+                    return Hit.MISS;
                 } else {
-                    return Hit.STRIKE;
+                    state.addStrike();
+                    if (state.isSunk()) {
+                        return Hit.fromInt(state.getShip().getLength());
+                    } else {
+                        return Hit.STRIKE;
+                    }
                 }
             }
         }
+        else if(this.hits[x][y] == true){
+            return Hit.ALREADY_STRUCK;
+        }
+        else {
+            return Hit.ALREADY_MISSED;
+        }
+
+
     }
 
     @Override
@@ -171,7 +181,7 @@ public class Board implements IBoard {
     }
 
     @Override
-    public void setHit(boolean hit, int x, int y) {
+    public void setHit(Boolean hit, int x, int y) {
         if (x > this.size || y > this.size) {
             throw new IllegalArgumentException("out of the grid.");
         }
